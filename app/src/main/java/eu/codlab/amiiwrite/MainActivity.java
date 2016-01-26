@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
@@ -25,6 +26,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
@@ -34,6 +39,7 @@ import eu.codlab.amiiwrite.database.controllers.AmiiboController;
 import eu.codlab.amiiwrite.database.models.Amiibo;
 import eu.codlab.amiiwrite.ui._stack.StackController;
 import eu.codlab.amiiwrite.ui.dashboard.DashboardFragment;
+import eu.codlab.amiiwrite.ui.drawer.MenuDrawer;
 import eu.codlab.amiiwrite.ui.information.fragments.AmiiboInformationFragment;
 import eu.codlab.amiiwrite.ui.my_list.EventMyList;
 import eu.codlab.amiiwrite.ui.my_list.fragments.MyAmiiboByCategoryFragment;
@@ -273,5 +279,34 @@ public class MainActivity extends AppCompatActivity
             if (_stack_controller.head() instanceof ScanToWriteFragment) _stack_controller.pop();
             Toast.makeText(this, R.string.written_successfully, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void addBinary() {
+        closeDrawwer();
+        Intent intent = new Intent();
+        intent.setType("file/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Choisissez un fichier"), 1);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        File file = new File(Uri.parse(data.getDataString()).getPath());
+        if(file.exists() && file.canRead()) {
+            try {
+                InputStream is = new FileInputStream(file);
+                byte[] fileData = new byte[540];
+                is.read(fileData);
+                is.close();
+                _stack_controller.push(ScannedAmiiboFragment.newInstance(fileData));
+            } catch (Exception e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(this, R.string.file_read_err, Toast.LENGTH_LONG).show();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

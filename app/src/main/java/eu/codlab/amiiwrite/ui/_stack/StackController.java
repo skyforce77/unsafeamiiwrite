@@ -61,7 +61,7 @@ public class StackController {
         _parent.getSupportFragmentManager()
                 .beginTransaction()
                 .replace(_container.getId(), head())
-                .commit();
+                .commitAllowingStateLoss();
 
         _parent.invalidateToolbar();
     }

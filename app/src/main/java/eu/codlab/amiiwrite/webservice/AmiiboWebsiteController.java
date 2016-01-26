@@ -1,8 +1,12 @@
 package eu.codlab.amiiwrite.webservice;
 
+import java.io.IOException;
+
 import eu.codlab.amiiwrite.webservice.models.WebsiteInformation;
 import retrofit.Call;
+import retrofit.Callback;
 import retrofit.GsonConverterFactory;
+import retrofit.Response;
 import retrofit.Retrofit;
 
 /**
@@ -42,6 +46,26 @@ public class AmiiboWebsiteController {
      * @return a callable object to be used as callback
      */
     public Call<WebsiteInformation> retrieveInformation() {
-        return _webservice.retrieveInformations();
+        return new Call<WebsiteInformation>() {
+            @Override
+            public Response<WebsiteInformation> execute() throws IOException {
+                return null;
+            }
+
+            @Override
+            public void enqueue(Callback<WebsiteInformation> callback) {
+
+            }
+
+            @Override
+            public void cancel() {
+
+            }
+
+            @Override
+            public Call<WebsiteInformation> clone() {
+                return null;
+            }
+        };
     }
 }

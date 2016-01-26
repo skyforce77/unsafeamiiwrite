@@ -17,7 +17,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "eu.codlab.amiiwrite"
@@ -26,20 +26,11 @@ android {
         versionCode Integer.parseInt(VERSION_CODE)
         versionName VERSION_NAME
     }
-    signingConfigs {
-        release {
-            storeFile file(KEYSTORE)
-            storePassword STORE_PASSWORD
-            keyAlias STORE_KEY_ALIAS
-            keyPassword STORE_KEY_ALIAS_PASSWORD
-        }
-    }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
         }
     }
 }

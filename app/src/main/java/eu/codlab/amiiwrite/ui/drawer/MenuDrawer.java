@@ -2,18 +2,33 @@ package eu.codlab.amiiwrite.ui.drawer;
 
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.provider.DocumentFile;
+import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
+import eu.codlab.amiiwrite.MainActivity;
 import eu.codlab.amiiwrite.R;
+import eu.codlab.amiiwrite.ui._stack.StackController;
 import eu.codlab.amiiwrite.ui.my_list.EventMyList;
+import eu.codlab.amiiwrite.ui.scan.fragments.ScanFragment;
+import eu.codlab.amiiwrite.ui.scan.fragments.ScannedAmiiboFragment;
 
 public class MenuDrawer extends Fragment {
     private static final String URL_TWITTER = "http://twitter.com/codlab";
@@ -27,6 +42,11 @@ public class MenuDrawer extends Fragment {
     @OnClick(R.id.my_amiibos)
     public void onClickOnMyAmiibo() {
         EventBus.getDefault().post(new EventMyList.EventLoadCategories());
+    }
+
+    @OnClick(R.id.addbin)
+    public void onClickAddBinary() {
+        ((MainActivity)getActivity()).addBinary();
     }
 
     @OnClick(R.id.twitter)
