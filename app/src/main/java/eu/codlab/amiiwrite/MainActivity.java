@@ -292,20 +292,22 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        File file = new File(Uri.parse(data.getDataString()).getPath());
-        if(file.exists() && file.canRead()) {
-            try {
-                InputStream is = new FileInputStream(file);
-                byte[] fileData = new byte[540];
-                is.read(fileData);
-                is.close();
-                _stack_controller.push(ScannedAmiiboFragment.newInstance(fileData));
-            } catch (Exception e) {
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-                e.printStackTrace();
+        if(data != null) {
+            File file = new File(Uri.parse(data.getDataString()).getPath());
+            if (file.exists() && file.canRead()) {
+                try {
+                    InputStream is = new FileInputStream(file);
+                    byte[] fileData = new byte[540];
+                    is.read(fileData);
+                    is.close();
+                    _stack_controller.push(ScannedAmiiboFragment.newInstance(fileData));
+                } catch (Exception e) {
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
+            } else {
+                Toast.makeText(this, R.string.file_read_err, Toast.LENGTH_LONG).show();
             }
-        } else {
-            Toast.makeText(this, R.string.file_read_err, Toast.LENGTH_LONG).show();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
