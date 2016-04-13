@@ -27,3 +27,6 @@ proguard/
 *.log
 
 gradle.properties
+
+#Idea
+.idea
