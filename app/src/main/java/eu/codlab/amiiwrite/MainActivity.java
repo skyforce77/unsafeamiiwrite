@@ -48,6 +48,7 @@ import eu.codlab.amiiwrite.ui.scan.ScanEvent;
 import eu.codlab.amiiwrite.ui.scan.fragments.ScanFragment;
 import eu.codlab.amiiwrite.ui.scan.fragments.ScanToWriteFragment;
 import eu.codlab.amiiwrite.ui.scan.fragments.ScannedAmiiboFragment;
+import eu.codlab.amiiwrite.utils.ExecuteAsRootBase;
 
 public class MainActivity extends AppCompatActivity
         implements ScanFragment.IScanListener
@@ -294,19 +295,27 @@ public class MainActivity extends AppCompatActivity
     {
         if(data != null) {
             File file = new File(Uri.parse(data.getDataString()).getPath());
-            if (file.exists() && file.canRead()) {
-                try {
-                    InputStream is = new FileInputStream(file);
-                    byte[] fileData = new byte[540];
-                    is.read(fileData);
-                    is.close();
-                    _stack_controller.push(ScannedAmiiboFragment.newInstance(fileData));
-                } catch (Exception e) {
-                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-                    e.printStackTrace();
+            if (file.exists()) {
+                if(file.canRead()) {
+                    try {
+                        InputStream is = new FileInputStream(file);
+                        byte[] fileData = new byte[540];
+                        is.read(fileData);
+                        is.close();
+                        _stack_controller.push(ScannedAmiiboFragment.newInstance(fileData));
+                    } catch (Exception e) {
+                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        e.printStackTrace();
+                    }
+                } else {
+                    if(ExecuteAsRootBase.canRunRootCommands()) {
+                        //onActivityResult(requestCode, resultCode, data);
+                    } else {
+                        Toast.makeText(this, R.string.file_read_err, Toast.LENGTH_LONG).show();
+                    }
                 }
             } else {
-                Toast.makeText(this, R.string.file_read_err, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.file_not_found, Toast.LENGTH_LONG).show();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
