@@ -5,7 +5,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="menu_drawer_my_amiibos">My amiibos</string>
     <string name="menu_drawer_addbin">Add binary file</string>
-    <string name="file_read_err">Unreadable file</string>
+    <string name="file_read_err">Unable to open file</string>
+    <string name="file_not_found">File not found</string>
     <string name="file_choose">Choose file</string>
     <string name="pages_header">NFC tag content:</string>
     <string name="waiting_for_scan">Waiting for any amiibo to scan...</string>
