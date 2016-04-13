@@ -297,19 +297,19 @@ public class MainActivity extends AppCompatActivity
             File file = new File(Uri.parse(data.getDataString()).getPath());
             if (file.exists()) {
                 if(file.canRead()) {
-                    try {
-                        InputStream is = new FileInputStream(file);
-                        byte[] fileData = new byte[540];
-                        is.read(fileData);
-                        is.close();
-                        _stack_controller.push(ScannedAmiiboFragment.newInstance(fileData));
-                    } catch (Exception e) {
-                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
-                    }
+                    openAmiiboData(file);
                 } else {
                     if(ExecuteAsRootBase.canRunRootCommands()) {
-                        //onActivityResult(requestCode, resultCode, data);
+                        getCacheDir().mkdirs();
+                        String[] commands = {"cp "+file.getAbsolutePath()+" "+getCacheDir(),
+                                                "chmod 777 "+getCacheDir()+"/"+file.getName()};
+                        if(ExecuteAsRootBase.execute(commands)) {
+                            File temp = new File(getCacheDir()+"/"+file.getName());
+                            Toast.makeText(this, R.string.file_read_root, Toast.LENGTH_LONG).show();
+                            openAmiiboData(temp);
+                        } else {
+                            Toast.makeText(this, R.string.file_read_root_err, Toast.LENGTH_LONG).show();
+                        }
                     } else {
                         Toast.makeText(this, R.string.file_read_err, Toast.LENGTH_LONG).show();
                     }
@@ -319,5 +319,18 @@ public class MainActivity extends AppCompatActivity
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void openAmiiboData(File file) {
+        try {
+            InputStream is = new FileInputStream(file);
+            byte[] fileData = new byte[540];
+            is.read(fileData);
+            is.close();
+            _stack_controller.push(ScannedAmiiboFragment.newInstance(fileData));
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
     }
 }

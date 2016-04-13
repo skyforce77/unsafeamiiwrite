@@ -5,6 +5,7 @@ import android.util.Log;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -70,14 +71,13 @@ public abstract class ExecuteAsRootBase
         return retval;
     }
 
-    public final boolean execute()
+    public static boolean execute(String... commands)
     {
         boolean retval = false;
 
         try
         {
-            ArrayList<String> commands = getCommandsToExecute();
-            if (null != commands && commands.size() > 0)
+            if (null != commands && commands.length > 0)
             {
                 Process suProcess = Runtime.getRuntime().exec("su");
 
@@ -128,5 +128,4 @@ public abstract class ExecuteAsRootBase
 
         return retval;
     }
-    protected abstract ArrayList<String> getCommandsToExecute();
 }

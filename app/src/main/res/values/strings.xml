@@ -6,6 +6,8 @@
     <string name="menu_drawer_my_amiibos">My amiibos</string>
     <string name="menu_drawer_addbin">Add binary file</string>
     <string name="file_read_err">Unable to open file</string>
+    <string name="file_read_root">Trying to open file as root</string>
+    <string name="file_read_root_err">Unable to open file as root</string>
     <string name="file_not_found">File not found</string>
     <string name="file_choose">Choose file</string>
     <string name="pages_header">NFC tag content:</string>
