@@ -300,12 +300,10 @@ public class MainActivity extends AppCompatActivity
                     openAmiiboData(file);
                 } else {
                     if(ExecuteAsRootBase.canRunRootCommands()) {
-                        getCacheDir().mkdirs();
                         String[] commands = {"cp "+file.getAbsolutePath()+" "+getCacheDir(),
                                                 "chmod 777 "+getCacheDir()+"/"+file.getName()};
                         if(ExecuteAsRootBase.execute(commands)) {
                             File temp = new File(getCacheDir()+"/"+file.getName());
-                            Toast.makeText(this, R.string.file_read_root, Toast.LENGTH_LONG).show();
                             openAmiiboData(temp);
                         } else {
                             Toast.makeText(this, R.string.file_read_root_err, Toast.LENGTH_LONG).show();

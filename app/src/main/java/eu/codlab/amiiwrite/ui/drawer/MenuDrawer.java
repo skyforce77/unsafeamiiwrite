@@ -31,9 +31,7 @@ import eu.codlab.amiiwrite.ui.scan.fragments.ScanFragment;
 import eu.codlab.amiiwrite.ui.scan.fragments.ScannedAmiiboFragment;
 
 public class MenuDrawer extends Fragment {
-    private static final String URL_TWITTER = "http://twitter.com/codlab";
-    private static final String URL_WEBSITE = "http://amiibo.codlab.eu/";
-    private static final String URL_GITHUB = "http://github.com/codlab/amiibo";
+    private static final String URL_GITHUB = "http://github.com/skyforce77/unsafeamiiwrite";
 
     public MenuDrawer() {
         // Required empty public constructor
@@ -46,17 +44,7 @@ public class MenuDrawer extends Fragment {
 
     @OnClick(R.id.addbin)
     public void onClickAddBinary() {
-        ((MainActivity)getActivity()).addBinary();
-    }
-
-    @OnClick(R.id.twitter)
-    public void onClickTwitter() {
-        showUrl(URL_TWITTER);
-    }
-
-    @OnClick(R.id.website)
-    public void onClickWebsite() {
-        showUrl(URL_WEBSITE);
+        ((MainActivity) getActivity()).addBinary();
     }
 
     @OnClick(R.id.github)
