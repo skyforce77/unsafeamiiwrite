@@ -2,7 +2,8 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="title_size">30sp</dimen>
+    <dimen name="title_size">25sp</dimen>
+    <dimen name="subtitle_size">12sp</dimen>
 
     <integer name="amiibo_columns">3</integer>
     <integer name="amiibo_columns_with_content">1</integer>
