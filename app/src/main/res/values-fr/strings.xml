@@ -1,8 +1,8 @@
 <resources>
     <string name="menu_drawer_my_amiibos">Mes Amiibos</string>
     <string name="menu_drawer_addbin">Ajouter un binaire</string>
-    <string name="file_read_err">Impossible d'ouvrir le fichier</string>
-    <string name="file_read_root_err">Impossible d'ouvrir le fichier en tant qu'utilisateur root</string>
+    <string name="file_read_err">Impossible d\'ouvrir le fichier</string>
+    <string name="file_read_root_err">Impossible d\'ouvrir le fichier en tant qu\'utilisateur root</string>
     <string name="file_not_found">Fichier introuvable</string>
     <string name="file_choose">Choisissez un fichier</string>
     <string name="pages_header">Contenu de la puce NFC :</string>
