@@ -26,6 +26,7 @@ import de.greenrobot.event.EventBus;
 import eu.codlab.amiiwrite.MainActivity;
 import eu.codlab.amiiwrite.R;
 import eu.codlab.amiiwrite.ui._stack.StackController;
+import eu.codlab.amiiwrite.ui.drive.DriveEvent;
 import eu.codlab.amiiwrite.ui.my_list.EventMyList;
 import eu.codlab.amiiwrite.ui.scan.fragments.ScanFragment;
 import eu.codlab.amiiwrite.ui.scan.fragments.ScannedAmiiboFragment;
@@ -45,6 +46,11 @@ public class MenuDrawer extends Fragment {
     @OnClick(R.id.addbin)
     public void onClickAddBinary() {
         ((MainActivity) getActivity()).addBinary();
+    }
+
+    @OnClick(R.id.sync_drive)
+    public void onClickOnSyncDrive() {
+        EventBus.getDefault().post(new DriveEvent.StartFragment());
     }
 
     @OnClick(R.id.github)

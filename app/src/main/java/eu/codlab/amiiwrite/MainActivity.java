@@ -37,9 +37,12 @@ import de.greenrobot.event.Subscribe;
 import de.greenrobot.event.ThreadMode;
 import eu.codlab.amiiwrite.database.controllers.AmiiboController;
 import eu.codlab.amiiwrite.database.models.Amiibo;
+import eu.codlab.amiiwrite.sync.SyncService;
 import eu.codlab.amiiwrite.ui._stack.StackController;
 import eu.codlab.amiiwrite.ui.dashboard.DashboardFragment;
 import eu.codlab.amiiwrite.ui.drawer.MenuDrawer;
+import eu.codlab.amiiwrite.ui.drive.DriveEvent;
+import eu.codlab.amiiwrite.ui.drive.fragments.DriveFragment;
 import eu.codlab.amiiwrite.ui.information.fragments.AmiiboInformationFragment;
 import eu.codlab.amiiwrite.ui.my_list.EventMyList;
 import eu.codlab.amiiwrite.ui.my_list.fragments.MyAmiiboByCategoryFragment;
@@ -94,10 +97,14 @@ public class MainActivity extends AppCompatActivity
         }
 
         initToolbar();
+
+        SyncService.start(this);
     }
 
     @Override
     public void onBackPressed() {
+        if (_stack_controller.managedOnBackPressed()) return;
+
         if (!_stack_controller.pop()) {
             super.onBackPressed();
         }
@@ -124,6 +131,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                if (_stack_controller.managedOnBackPressed()) return true;
+
                 if (!_stack_controller.pop()) {
                     opendDrawer();
                 }
@@ -134,11 +143,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void checkIntentForPushFragment() {
-        if (hasNfc())
-            _stack_controller.push(new ScanFragment());
-/*        if (hasNfc()) {
-            onScaningRequested(new ScanEvent.StartFragment());
-        }*/
+        if (hasNfc()) _stack_controller.push(new ScanFragment());
     }
 
     private boolean hasNfc() {
@@ -205,6 +210,12 @@ public class MainActivity extends AppCompatActivity
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MainThread)
+    public void onDriveRequested(DriveEvent.StartFragment event) {
+        _stack_controller.push(new DriveFragment());
+        closeDrawwer();
     }
 
     @Subscribe(threadMode = ThreadMode.MainThread)
@@ -293,30 +304,37 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if(data != null) {
-            File file = new File(Uri.parse(data.getDataString()).getPath());
-            if (file.exists()) {
-                if(file.canRead()) {
-                    openAmiiboData(file);
-                } else {
-                    if(ExecuteAsRootBase.canRunRootCommands()) {
-                        String[] commands = {"cp "+file.getAbsolutePath()+" "+getCacheDir(),
-                                                "chmod 777 "+getCacheDir()+"/"+file.getName()};
-                        if(ExecuteAsRootBase.execute(commands)) {
-                            File temp = new File(getCacheDir()+"/"+file.getName());
-                            openAmiiboData(temp);
-                        } else {
-                            Toast.makeText(this, R.string.file_read_root_err, Toast.LENGTH_LONG).show();
-                        }
+        boolean managed = false;
+        if (_stack_controller != null && _stack_controller.head() instanceof DriveFragment) {
+            managed = ((DriveFragment) _stack_controller.head()).onResult(requestCode,
+                    resultCode, data);
+        } else {
+            if (data != null) {
+                File file = new File(Uri.parse(data.getDataString()).getPath());
+                if (file.exists()) {
+                    if (file.canRead()) {
+                        openAmiiboData(file);
+                        managed = true;
                     } else {
-                        Toast.makeText(this, R.string.file_read_err, Toast.LENGTH_LONG).show();
+                        if (ExecuteAsRootBase.canRunRootCommands()) {
+                            String[] commands = {"cp " + file.getAbsolutePath() + " " + getCacheDir(),
+                                    "chmod 777 " + getCacheDir() + "/" + file.getName()};
+                            if (ExecuteAsRootBase.execute(commands)) {
+                                File temp = new File(getCacheDir() + "/" + file.getName());
+                                openAmiiboData(temp);
+                            } else {
+                                Toast.makeText(this, R.string.file_read_root_err, Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Toast.makeText(this, R.string.file_read_err, Toast.LENGTH_LONG).show();
+                        }
                     }
+                } else {
+                    Toast.makeText(this, R.string.file_not_found, Toast.LENGTH_LONG).show();
                 }
-            } else {
-                Toast.makeText(this, R.string.file_not_found, Toast.LENGTH_LONG).show();
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
+        if (!managed) super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void openAmiiboData(File file) {
@@ -329,6 +347,12 @@ public class MainActivity extends AppCompatActivity
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             e.printStackTrace();
+        }
+    }
+
+    public void startSync() {
+        if (SyncService.getInstance().isFinished()) {
+            SyncService.getInstance().init();
         }
     }
 }
